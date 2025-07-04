@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Olive - Mediterranean Christian App</title>
+  <link rel="stylesheet" href="olive-landing.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+</head>
+<body>
+  <div class="hero-bg" id="main-content">
+    <!-- Animated background SVG layer -->
+    <svg id="animated-bg" width="100%" height="100%" viewBox="0 0 800 600" style="position:absolute;top:0;left:0;width:100vw;height:100vh;z-index:0;pointer-events:none;">
+      <!-- Floating olive leaves -->
+      <ellipse class="bg-leaf" id="leaf1" cx="120" cy="180" rx="32" ry="12" fill="#A3C585" opacity="0.18"/>
+      <ellipse class="bg-leaf" id="leaf2" cx="700" cy="400" rx="24" ry="10" fill="#7D945D" opacity="0.13"/>
+      <ellipse class="bg-leaf" id="leaf3" cx="400" cy="100" rx="28" ry="11" fill="#8ba75a" opacity="0.15"/>
+      <ellipse class="bg-leaf" id="leaf4" cx="600" cy="220" rx="20" ry="8" fill="#A3C585" opacity="0.12"/>
+      <!-- Soft rays -->
+      <g id="bg-rays">
+        <line x1="400" y1="300" x2="400" y2="80" stroke="#e9c46a" stroke-width="4" opacity="0.08"/>
+        <line x1="400" y1="300" x2="700" y2="120" stroke="#e9c46a" stroke-width="4" opacity="0.06"/>
+        <line x1="400" y1="300" x2="100" y2="120" stroke="#e9c46a" stroke-width="4" opacity="0.06"/>
+        <line x1="400" y1="300" x2="800" y2="300" stroke="#e9c46a" stroke-width="4" opacity="0.05"/>
+        <line x1="400" y1="300" x2="0" y2="300" stroke="#e9c46a" stroke-width="4" opacity="0.05"/>
+      </g>
+      <!-- Animated ecosystem elements -->
+      <!-- Grass -->
+      <g id="ecosystem-grass">
+        <path id="grass-1" d="M100,590 Q105,580 110,590" stroke="#A3C585" stroke-width="4" fill="none" opacity="0.18"/>
+        <path id="grass-2" d="M130,590 Q135,575 140,590" stroke="#A3C585" stroke-width="4" fill="none" opacity="0.18"/>
+        <path id="grass-3" d="M160,590 Q165,580 170,590" stroke="#A3C585" stroke-width="4" fill="none" opacity="0.18"/>
+        <path id="grass-4" d="M200,590 Q205,578 210,590" stroke="#A3C585" stroke-width="4" fill="none" opacity="0.18"/>
+        <path id="grass-5" d="M250,590 Q255,582 260,590" stroke="#A3C585" stroke-width="4" fill="none" opacity="0.18"/>
+        <path id="grass-6" d="M300,590 Q305,580 310,590" stroke="#A3C585" stroke-width="4" fill="none" opacity="0.18"/>
+        <path id="grass-7" d="M400,590 Q405,580 410,590" stroke="#A3C585" stroke-width="4" fill="none" opacity="0.18"/>
+        <path id="grass-8" d="M600,590 Q605,580 610,590" stroke="#A3C585" stroke-width="4" fill="none" opacity="0.18"/>
+      </g>
+      <!-- Flowers -->
+      <g id="ecosystem-flowers">
+        <g id="flower-1"><circle cx="135" cy="570" r="6" fill="#e9c46a" opacity="0.18"/><circle cx="135" cy="570" r="2" fill="#f4a259" opacity="0.18"/></g>
+        <g id="flower-2"><circle cx="205" cy="575" r="5" fill="#e9c46a" opacity="0.18"/><circle cx="205" cy="575" r="2" fill="#f4a259" opacity="0.18"/></g>
+        <g id="flower-3"><circle cx="260" cy="580" r="7" fill="#A3C585" opacity="0.18"/><circle cx="260" cy="580" r="2" fill="#7D945D" opacity="0.18"/></g>
+        <g id="flower-4"><circle cx="310" cy="570" r="6" fill="#e9c46a" opacity="0.18"/><circle cx="310" cy="570" r="2" fill="#f4a259" opacity="0.18"/></g>
+        <g id="flower-5"><circle cx="410" cy="575" r="5" fill="#A3C585" opacity="0.18"/><circle cx="410" cy="575" r="2" fill="#7D945D" opacity="0.18"/></g>
+        <g id="flower-6"><circle cx="605" cy="580" r="7" fill="#e9c46a" opacity="0.18"/><circle cx="605" cy="580" r="2" fill="#f4a259" opacity="0.18"/></g>
+      </g>
+      <!-- Bushes -->
+      <g id="ecosystem-bushes">
+        <ellipse id="bush-1" cx="180" cy="590" rx="18" ry="8" fill="#8ba75a" opacity="0.13"/>
+        <ellipse id="bush-2" cx="350" cy="590" rx="22" ry="10" fill="#A3C585" opacity="0.13"/>
+        <ellipse id="bush-3" cx="500" cy="590" rx="20" ry="9" fill="#7D945D" opacity="0.13"/>
+      </g>
+      <!-- Houses -->
+      <g id="ecosystem-houses">
+        <g id="house-1">
+          <rect x="480" y="570" width="18" height="14" fill="#fbeab0" opacity="0.18"/>
+          <polygon points="480,570 489,560 498,570" fill="#b48a5a" opacity="0.18"/>
+          <rect x="487" y="578" width="4" height="6" fill="#7D945D" opacity="0.18"/>
+        </g>
+        <g id="house-2">
+          <rect x="570" y="575" width="16" height="12" fill="#fbeab0" opacity="0.18"/>
+          <polygon points="570,575 578,565 586,575" fill="#b48a5a" opacity="0.18"/>
+          <rect x="577" y="580" width="3" height="5" fill="#7D945D" opacity="0.18"/>
+        </g>
+        <g id="house-3">
+          <rect x="650" y="580" width="14" height="10" fill="#fbeab0" opacity="0.18"/>
+          <polygon points="650,580 657,572 664,580" fill="#b48a5a" opacity="0.18"/>
+          <rect x="656" y="584" width="2" height="4" fill="#7D945D" opacity="0.18"/>
+        </g>
+      </g>
+      <!-- Wind -->
+      <g id="ecosystem-wind">
+        <path id="wind-1" d="M100,100 Q200,80 300,120 Q400,160 600,100" stroke="#e9c46a" stroke-width="4" fill="none" opacity="0.08"/>
+        <path id="wind-2" d="M200,200 Q300,180 400,220 Q500,260 700,200" stroke="#e9c46a" stroke-width="4" fill="none" opacity="0.08"/>
+      </g>
+      <!-- Birds -->
+      <g id="ecosystem-birds">
+        <path id="bird-1" d="M150,80 Q160,70 170,80" stroke="#7D945D" stroke-width="3" fill="none" opacity="0.18"/>
+        <path id="bird-2" d="M300,60 Q310,50 320,60" stroke="#A3C585" stroke-width="3" fill="none" opacity="0.18"/>
+        <path id="bird-3" d="M500,90 Q510,80 520,90" stroke="#8ba75a" stroke-width="3" fill="none" opacity="0.18"/>
+      </g>
+      <!-- Bugs/Butterflies -->
+      <g id="ecosystem-bugs">
+        <ellipse id="bug-1" cx="180" cy="500" rx="2.5" ry="2" fill="#7D945D" opacity="0.18"/>
+        <ellipse id="bug-2" cx="350" cy="520" rx="2.5" ry="2" fill="#A3C585" opacity="0.18"/>
+        <ellipse id="bug-3" cx="600" cy="540" rx="2.5" ry="2" fill="#8ba75a" opacity="0.18"/>
+        <ellipse id="bug-4" cx="700" cy="510" rx="2.5" ry="2" fill="#e9c46a" opacity="0.18"/>
+      </g>
+      <!-- Mini-world Mediterranean island base -->
+      <ellipse id="island-base" cx="400" cy="500" rx="340" ry="120" fill="#b7d3a8" opacity="0.18" transform="rotate(-8 400 500)"/>
+      <!-- Winding Mediterranean path/road -->
+      <path id="island-path" d="M250,540 Q350,520 400,500 Q450,480 550,520" stroke="#e9c46a" stroke-width="12" fill="none" opacity="0.13"/>
+      <!-- Mediterranean trees, houses, and plants arranged around the island -->
+      <g id="island-trees">
+        <g transform="translate(270,470) rotate(-10)">
+          <ellipse cx="0" cy="0" rx="18" ry="28" fill="#7D945D" opacity="0.18"/>
+          <rect x="-4" y="20" width="8" height="18" fill="#b48a5a" opacity="0.18"/>
+        </g>
+        <g transform="translate(340,440) rotate(-5)">
+          <ellipse cx="0" cy="0" rx="14" ry="22" fill="#A3C585" opacity="0.18"/>
+          <rect x="-3" y="14" width="6" height="14" fill="#b48a5a" opacity="0.18"/>
+        </g>
+        <g transform="translate(420,430) rotate(0)">
+          <ellipse cx="0" cy="0" rx="16" ry="24" fill="#8ba75a" opacity="0.18"/>
+          <rect x="-3" y="16" width="6" height="16" fill="#b48a5a" opacity="0.18"/>
+        </g>
+        <g transform="translate(500,450) rotate(8)">
+          <ellipse cx="0" cy="0" rx="15" ry="20" fill="#A3C585" opacity="0.18"/>
+          <rect x="-3" y="12" width="6" height="14" fill="#b48a5a" opacity="0.18"/>
+        </g>
+        <g transform="translate(570,480) rotate(12)">
+          <ellipse cx="0" cy="0" rx="18" ry="28" fill="#7D945D" opacity="0.18"/>
+          <rect x="-4" y="20" width="8" height="18" fill="#b48a5a" opacity="0.18"/>
+        </g>
+      </g>
+      <g id="island-houses">
+        <g transform="translate(320,500) rotate(-7)">
+          <rect x="-8" y="0" width="16" height="12" fill="#fbeab0" opacity="0.18"/>
+          <polygon points="-8,0 0,-10 8,0" fill="#b48a5a" opacity="0.18"/>
+        </g>
+        <g transform="translate(480,510) rotate(7)">
+          <rect x="-7" y="0" width="14" height="10" fill="#fbeab0" opacity="0.18"/>
+          <polygon points="-7,0 0,-8 7,0" fill="#b48a5a" opacity="0.18"/>
+        </g>
+        <g transform="translate(400,470) rotate(0)">
+          <rect x="-9" y="0" width="18" height="14" fill="#fbeab0" opacity="0.18"/>
+          <polygon points="-9,0 0,-12 9,0" fill="#b48a5a" opacity="0.18"/>
+        </g>
+      </g>
+      <g id="island-plants">
+        <ellipse cx="300" cy="520" rx="10" ry="5" fill="#A3C585" opacity="0.13"/>
+        <ellipse cx="370" cy="510" rx="8" ry="4" fill="#8ba75a" opacity="0.13"/>
+        <ellipse cx="450" cy="515" rx="9" ry="5" fill="#A3C585" opacity="0.13"/>
+        <ellipse cx="520" cy="525" rx="10" ry="5" fill="#8ba75a" opacity="0.13"/>
+      </g>
+      <!-- Sun and clouds in dynamic, layered positions -->
+      <g id="island-sky">
+        <ellipse id="island-sun" cx="650" cy="80" rx="38" ry="38" fill="#ffe5a0" opacity="0.18"/>
+        <ellipse id="cloud-1" cx="200" cy="100" rx="40" ry="18" fill="#fff" opacity="0.10"/>
+        <ellipse id="cloud-2" cx="500" cy="60" rx="30" ry="14" fill="#fff" opacity="0.10"/>
+        <ellipse id="cloud-3" cx="600" cy="120" rx="28" ry="12" fill="#fff" opacity="0.10"/>
+      </g>
+      <!-- Remove trees above the blue area (top half) -->
+      <!-- Only keep trees in the lower half/island area -->
+      <!-- Fluffy white clouds in the blue area (top half) -->
+      <g id="sky-clouds">
+        <ellipse id="cloud-a" cx="180" cy="90" rx="48" ry="20" fill="#fff" opacity="0.18"/>
+        <ellipse id="cloud-b" cx="350" cy="60" rx="38" ry="16" fill="#fff" opacity="0.15"/>
+        <ellipse id="cloud-c" cx="600" cy="110" rx="42" ry="18" fill="#fff" opacity="0.16"/>
+        <ellipse id="cloud-d" cx="500" cy="80" rx="30" ry="12" fill="#fff" opacity="0.13"/>
+      </g>
+    </svg>
+    <header class="header">
+      <span class="logo">Olive</span>
+    </header>
+    <main class="hero-content">
+      <svg id="olive-logo" class="olive-logo" width="120" height="120" viewBox="0 0 120 120" style="display:block;margin:0 auto 1.5rem auto;">
+        <!-- Olive body -->
+        <ellipse id="olive-body" cx="60" cy="65" rx="38" ry="52" fill="#7D945D"/>
+        <!-- Olive highlight -->
+        <ellipse id="olive-highlight" cx="50" cy="50" rx="12" ry="18" fill="#b7d3a8" opacity="0.45"/>
+        <!-- Olive stem -->
+        <rect id="olive-stem" x="56" y="18" width="8" height="22" rx="4" fill="#4d5e3a"/>
+      </svg>
+      <h1 class="hero-title">The Leader in Website Creation</h1>
+      <p class="hero-subtitle">A new way to connect, reflect, and grow in faith.</p>
+      <button class="cta-btn">Start Now</button>
+    </main>
+    <!-- Subtle background rays -->
+    <svg class="background-rays" width="100%" height="100%" viewBox="0 0 800 600" style="position:absolute;top:0;left:0;z-index:0;pointer-events:none;">
+      <g id="rays-group">
+        <line x1="400" y1="300" x2="400" y2="0" stroke="#e9c46a" stroke-width="2" opacity="0.12"/>
+        <line x1="400" y1="300" x2="700" y2="100" stroke="#e9c46a" stroke-width="2" opacity="0.10"/>
+        <line x1="400" y1="300" x2="100" y2="100" stroke="#e9c46a" stroke-width="2" opacity="0.10"/>
+        <line x1="400" y1="300" x2="800" y2="300" stroke="#e9c46a" stroke-width="2" opacity="0.08"/>
+        <line x1="400" y1="300" x2="0" y2="300" stroke="#e9c46a" stroke-width="2" opacity="0.08"/>
+      </g>
+    </svg>
+  </div>
+
+  <script>
+    // Forever background animations
+    anime({
+      targets: '#leaf1',
+      translateY: [0, -30, 0],
+      translateX: [0, 20, 0],
+      duration: 9000,
+      direction: 'alternate',
+      easing: 'easeInOutSine',
+      loop: true
+    });
+    anime({
+      targets: '#leaf2',
+      translateY: [0, 25, 0],
+      translateX: [0, -18, 0],
+      duration: 11000,
+      direction: 'alternate',
+      easing: 'easeInOutSine',
+      loop: true
+    });
+    anime({
+      targets: '#leaf3',
+      translateY: [0, -20, 0],
+      translateX: [0, 15, 0],
+      duration: 10000,
+      direction: 'alternate',
+      easing: 'easeInOutSine',
+      loop: true
+    });
+    anime({
+      targets: '#leaf4',
+      translateY: [0, 18, 0],
+      translateX: [0, -12, 0],
+      duration: 12000,
+      direction: 'alternate',
+      easing: 'easeInOutSine',
+      loop: true
+    });
+    anime({
+      targets: '#bg-rays',
+      rotate: [0, 12, -8, 0],
+      duration: 22000,
+      easing: 'easeInOutSine',
+      loop: true
+    });
+    // Animate all emoji trees
+    function animateAllEmojiTrees() {
+      for (let t = 1; t <= 5; t++) {
+        // Sway and pulse foliage and trunk
+        anime({
+          targets: [`#foliage-1-${t}`, `#foliage-2-${t}`, `#foliage-3-${t}`],
+          scale: [1, 1.04, 1],
+          translateX: [0, 2, -2, 0],
+          translateY: [0, -2, 2, 0],
+          duration: 6000,
+          direction: 'alternate',
+          easing: 'easeInOutSine',
+          loop: true,
+          delay: t * 300
+        });
+        anime({
+          targets: `#emoji-trunk-${t}`,
+          scaleX: [1, 1.02, 0.98, 1],
+          rotate: [0, 2, -2, 0],
+          duration: 8000,
+          direction: 'alternate',
+          easing: 'easeInOutSine',
+          loop: true,
+          delay: t * 400
+        });
+        // Animate olives: grow, fade, and regrow at new random positions
+        (function animateOlives(treeNum) {
+          const olives = [1,2,3,4,5].map(i => document.getElementById(`emoji-olive-${i}-${treeNum}`));
+          olives.forEach((olive, i) => {
+            // Pick a random position within the foliage bounds
+            const cloud = [
+              {cx:60, cy:20, rx:38, ry:28},
+              {cx:35, cy:35, rx:28, ry:22},
+              {cx:85, cy:35, rx:28, ry:22}
+            ][Math.floor(Math.random()*3)];
+            const angle = Math.random() * 2 * Math.PI;
+            const r = (cloud.rx-8) * Math.sqrt(Math.random());
+            const x = cloud.cx + r * Math.cos(angle);
+            const y = cloud.cy + (r * Math.sin(angle) * (cloud.ry/cloud.rx));
+            olive.setAttribute('cx', x);
+            olive.setAttribute('cy', y);
+            olive.setAttribute('opacity', 0);
+            olive.setAttribute('transform', 'scale(0.5)');
+            anime({
+              targets: olive,
+              opacity: [0, 0.7, 0],
+              scale: [0.5, 1, 1],
+              duration: 6000 + Math.random()*2000,
+              delay: i*600 + Math.random()*400,
+              easing: 'easeInOutSine',
+              complete: () => animateOlives(treeNum) // loop for each olive
+            });
+          });
+        })(t);
+      }
+    }
+    animateAllEmojiTrees();
+    // Animate sunrise: sun rises, then mountain and content fade in
+    anime({
+      targets: '#sun-ellipse',
+      cy: [220, 90],
+      duration: 1800,
+      easing: 'easeOutCubic',
+      complete: function() {
+        // Fade in mountain and content
+        anime({
+          targets: '#mountain-svg',
+          opacity: [0, 1],
+          duration: 900,
+          easing: 'easeOutCubic',
+        });
+        anime({
+          targets: ['.hero-title', '.hero-subtitle', '.cta-btn'],
+          opacity: [0, 1],
+          translateY: [40, 0],
+          delay: anime.stagger(200, {start: 400}),
+          duration: 900,
+          easing: 'easeOutExpo',
+        });
+      }
+    });
+
+    // Parallax effect for mountain and sunrise
+    const parallaxHero = document.querySelector('.parallax-hero');
+    const mountain = document.getElementById('mountain-svg');
+    const sunrise = document.getElementById('sunrise');
+    parallaxHero.addEventListener('mousemove', (e) => {
+      const rect = parallaxHero.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width - 0.5;
+      const y = (e.clientY - rect.top) / rect.height - 0.5;
+      mountain.style.transform = `translate(${x * 20}px, ${y * 10}px)`;
+      sunrise.style.transform = `translate(${x * 40}px, ${y * 20}px)`;
+    });
+    parallaxHero.addEventListener('mouseleave', () => {
+      mountain.style.transform = '';
+      sunrise.style.transform = '';
+    });
+
+    // Sun hover pop and rise effect
+    const sun = document.getElementById('sun-ellipse');
+    let sunHoverAnim = null;
+    sun.addEventListener('mouseenter', () => {
+      if (sunHoverAnim) sunHoverAnim.pause();
+      sunHoverAnim = anime({
+        targets: sun,
+        scale: 1.15,
+        cy: 60,
+        duration: 500,
+        easing: 'easeOutBack',
+      });
+    });
+    sun.addEventListener('mouseleave', () => {
+      if (sunHoverAnim) sunHoverAnim.pause();
+      sunHoverAnim = anime({
+        targets: sun,
+        scale: 1,
+        cy: 90,
+        duration: 500,
+        easing: 'easeOutBack',
+      });
+    });
+
+    // Animate ecosystem elements
+    // Grass swaying
+    for (let i = 1; i <= 8; i++) {
+      anime({
+        targets: `#grass-${i}`,
+        translateY: [0, -8, 0],
+        duration: 4000 + i*200,
+        direction: 'alternate',
+        easing: 'easeInOutSine',
+        loop: true,
+        delay: i*100
+      });
+    }
+    // Flowers blooming and swaying
+    for (let i = 1; i <= 6; i++) {
+      anime({
+        targets: [`#flower-${i} circle`],
+        scale: [0.7, 1.1, 1],
+        translateY: [0, -4, 0],
+        duration: 5000 + i*300,
+        direction: 'alternate',
+        easing: 'easeInOutSine',
+        loop: true,
+        delay: i*200
+      });
+    }
+    // Bushes pulsing
+    for (let i = 1; i <= 3; i++) {
+      anime({
+        targets: `#bush-${i}`,
+        scale: [1, 1.08, 1],
+        duration: 7000 + i*400,
+        direction: 'alternate',
+        easing: 'easeInOutSine',
+        loop: true,
+        delay: i*300
+      });
+    }
+    // Houses pulsing windows/chimneys
+    for (let i = 1; i <= 3; i++) {
+      anime({
+        targets: `#house-${i} rect, #house-${i} polygon`,
+        scale: [1, 1.04, 1],
+        duration: 6000 + i*300,
+        direction: 'alternate',
+        easing: 'easeInOutSine',
+        loop: true,
+        delay: i*400
+      });
+    }
+    // Wind flowing
+    for (let i = 1; i <= 2; i++) {
+      anime({
+        targets: `#wind-${i}`,
+        strokeDashoffset: [anime.setDashoffset, 0],
+        duration: 9000 + i*1000,
+        direction: 'alternate',
+        easing: 'easeInOutSine',
+        loop: true
+      });
+    }
+    // Birds flying
+    anime({
+      targets: ['#bird-1', '#bird-2', '#bird-3'],
+      translateX: [0, 600, 0],
+      opacity: [0.18, 0.18, 0],
+      duration: 18000,
+      easing: 'linear',
+      loop: true,
+      delay: anime.stagger(3000)
+    });
+    // Bugs/Butterflies looping
+    anime({
+      targets: '#bug-1',
+      translateX: [0, 40, 0],
+      translateY: [0, -30, 0],
+      duration: 9000,
+      direction: 'alternate',
+      easing: 'easeInOutSine',
+      loop: true
+    });
+    anime({
+      targets: '#bug-2',
+      translateX: [0, -30, 0],
+      translateY: [0, 20, 0],
+      duration: 8000,
+      direction: 'alternate',
+      easing: 'easeInOutSine',
+      loop: true
+    });
+    anime({
+      targets: '#bug-3',
+      translateX: [0, 25, 0],
+      translateY: [0, -15, 0],
+      duration: 10000,
+      direction: 'alternate',
+      easing: 'easeInOutSine',
+      loop: true
+    });
+    anime({
+      targets: '#bug-4',
+      translateX: [0, -20, 0],
+      translateY: [0, 10, 0],
+      duration: 11000,
+      direction: 'alternate',
+      easing: 'easeInOutSine',
+      loop: true
+    });
+    // Animate mini-world elements
+    // Sun pulsing
+    anime({
+      targets: '#island-sun',
+      scale: [1, 1.08, 1],
+      duration: 9000,
+      direction: 'alternate',
+      easing: 'easeInOutSine',
+      loop: true
+    });
+    // Clouds drifting
+    anime({
+      targets: '#cloud-1',
+      translateX: [0, 60, 0],
+      duration: 18000,
+      easing: 'easeInOutSine',
+      loop: true
+    });
+    anime({
+      targets: '#cloud-2',
+      translateX: [0, -40, 0],
+      duration: 16000,
+      easing: 'easeInOutSine',
+      loop: true
+    });
+    anime({
+      targets: '#cloud-3',
+      translateX: [0, 30, 0],
+      duration: 14000,
+      easing: 'easeInOutSine',
+      loop: true
+    });
+    // Animate fluffy clouds in the blue area
+    anime({
+      targets: '#cloud-a',
+      translateX: [0, 40, 0],
+      duration: 18000,
+      easing: 'easeInOutSine',
+      loop: true
+    });
+    anime({
+      targets: '#cloud-b',
+      translateX: [0, -30, 0],
+      duration: 16000,
+      easing: 'easeInOutSine',
+      loop: true
+    });
+    anime({
+      targets: '#cloud-c',
+      translateX: [0, 30, 0],
+      duration: 20000,
+      easing: 'easeInOutSine',
+      loop: true
+    });
+    anime({
+      targets: '#cloud-d',
+      translateX: [0, -20, 0],
+      duration: 14000,
+      easing: 'easeInOutSine',
+      loop: true
+    });
+    // Trees swaying
+    for (let i = 1; i <= 5; i++) {
+      anime({
+        targets: `#island-trees g:nth-child(${i}) ellipse`,
+        scale: [1, 1.06, 1],
+        duration: 6000 + i*400,
+        direction: 'alternate',
+        easing: 'easeInOutSine',
+        loop: true,
+        delay: i*200
+      });
+      anime({
+        targets: `#island-trees g:nth-child(${i}) rect`,
+        scaleY: [1, 1.04, 1],
+        duration: 7000 + i*300,
+        direction: 'alternate',
+        easing: 'easeInOutSine',
+        loop: true,
+        delay: i*300
+      });
+    }
+    // Houses pulsing
+    for (let i = 1; i <= 3; i++) {
+      anime({
+        targets: `#island-houses g:nth-child(${i}) rect, #island-houses g:nth-child(${i}) polygon`,
+        scale: [1, 1.04, 1],
+        duration: 8000 + i*400,
+        direction: 'alternate',
+        easing: 'easeInOutSine',
+        loop: true,
+        delay: i*400
+      });
+    }
+    // Plants pulsing
+    for (let i = 1; i <= 4; i++) {
+      anime({
+        targets: `#island-plants ellipse:nth-child(${i})`,
+        scale: [1, 1.08, 1],
+        duration: 7000 + i*300,
+        direction: 'alternate',
+        easing: 'easeInOutSine',
+        loop: true,
+        delay: i*200
+      });
+    }
+  </script>
+  <script>
+    // Animate hero title, subtitle, and button with staggered fade-in and upward movement
+    document.addEventListener('DOMContentLoaded', function() {
+      const targets = [
+        document.querySelector('.hero-title'),
+        document.querySelector('.hero-subtitle'),
+        document.querySelector('.cta-btn')
+      ];
+      targets.forEach(el => {
+        el.style.opacity = 0;
+        el.style.transform = 'translateY(40px)';
+      });
+      anime({
+        targets: targets,
+        opacity: [0, 1],
+        translateY: [40, 0],
+        easing: 'easeOutExpo',
+        duration: 900,
+        delay: anime.stagger(120, {start: 400})
+      });
+    });
+  </script>
+  <script>
+    // Animate Olive logo: entrance and floating
+    document.addEventListener('DOMContentLoaded', function() {
+      const olive = document.querySelector('.olive-logo');
+      olive.style.opacity = 0;
+      olive.style.transform = 'scale(0.7) translateY(30px)';
+      anime({
+        targets: olive,
+        opacity: [0, 1],
+        scale: [0.7, 1.08, 1],
+        translateY: [30, -10, 0],
+        easing: 'easeOutElastic(1, .7)',
+        duration: 1200,
+        complete: function() {
+          anime({
+            targets: olive,
+            translateY: [0, -10, 0, 10, 0],
+            translateX: [0, 6, 0, -6, 0],
+            rotate: [0, 3, 0, -3, 0],
+            duration: 4200,
+            easing: 'easeInOutSine',
+            loop: true
+          });
+        }
+      });
+    });
+  </script>
+</body>
+</html> 
