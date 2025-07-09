@@ -87,6 +87,10 @@ body, html {
   text-shadow: 0 2px 8px rgba(125, 148, 93, 0.15);
 }
 
+.olive-logo {
+  will-change: transform;
+}
+
 .hero-content {
   display: flex;
   flex-direction: column;

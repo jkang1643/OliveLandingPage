@@ -6,6 +6,31 @@
   <title>Olive - Mediterranean Christian App</title>
   <link rel="stylesheet" href="olive-landing.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    /* Performance optimizations */
+    svg {
+      will-change: transform;
+      transform: translateZ(0); /* Force hardware acceleration */
+    }
+    
+    .animated-element {
+      will-change: transform, opacity;
+      transform: translateZ(0); /* Force hardware acceleration */
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      overflow-x: hidden;
+    }
+  </style>
 </head>
 <body>
   <div class="hero-bg" id="main-content">
@@ -203,66 +228,348 @@
   </div>
 
   <script>
+    // Professional Animation Management System
+    class AnimationManager {
+      constructor() {
+        this.animations = new Map();
+        this.isInitialized = false;
+        this.performanceMode = this.detectPerformanceMode();
+      }
+      
+      detectPerformanceMode() {
+        // Detect device performance capabilities
+        const canvas = document.createElement('canvas');
+        const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+        if (!gl) return 'low';
+        
+        const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+        if (debugInfo) {
+          const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+          if (renderer.includes('Intel') || renderer.includes('Integrated')) {
+            return 'low';
+          }
+        }
+        return 'high';
+      }
+      
+      createAnimation(id, config) {
+        // Clean up existing animation if it exists
+        this.destroyAnimation(id);
+        
+        // Adjust config based on performance mode
+        if (this.performanceMode === 'low') {
+          config.duration = config.duration * 1.5; // Slower animations
+          config.delay = (config.delay || 0) * 1.5; // More spacing
+        }
+        
+        const animation = anime(config);
+        this.animations.set(id, animation);
+        return animation;
+      }
+      
+      destroyAnimation(id) {
+        const animation = this.animations.get(id);
+        if (animation) {
+          animation.pause();
+          animation.remove = () => {}; // Prevent memory leaks
+          this.animations.delete(id);
+        }
+      }
+      
+      destroyAllAnimations() {
+        this.animations.forEach((animation, id) => {
+          this.destroyAnimation(id);
+        });
+      }
+      
+      pauseAllAnimations() {
+        this.animations.forEach(animation => {
+          animation.pause();
+        });
+      }
+      
+      resumeAllAnimations() {
+        this.animations.forEach(animation => {
+          animation.play();
+        });
+      }
+    }
+    
+    // Global animation manager
+    const animationManager = new AnimationManager();
+    
     document.addEventListener('DOMContentLoaded', function() {
-      // Forever background animations
-      ['#leaf1', '#leaf2', '#leaf3', '#leaf4'].forEach(id => {
-        console.log('Selecting', id, document.querySelector(id));
-      });
-      anime({
-        targets: '#leaf1',
-        translateY: [0, -30, 0],
-        translateX: [0, 20, 0],
-        duration: 9000,
+      // Initialize animation manager
+      animationManager.isInitialized = true;
+      
+      // Forever background animations with proper management
+      ['#leaf1', '#leaf2', '#leaf3', '#leaf4'].forEach((id, index) => {
+        animationManager.createAnimation(`leaf-${index}`, {
+          targets: id,
+          translateY: [0, -30 + (index * 10), 0],
+          translateX: [0, 20 - (index * 5), 0],
+          duration: 9000 + (index * 1000),
         direction: 'alternate',
         easing: 'easeInOutSine',
         loop: true
       });
-      anime({
-        targets: '#leaf2',
-        translateY: [0, 25, 0],
-        translateX: [0, -18, 0],
-        duration: 11000,
-        direction: 'alternate',
-        easing: 'easeInOutSine',
-        loop: true
       });
-      anime({
-        targets: '#leaf3',
-        translateY: [0, -20, 0],
-        translateX: [0, 15, 0],
-        duration: 10000,
-        direction: 'alternate',
-        easing: 'easeInOutSine',
-        loop: true
-      });
-      anime({
-        targets: '#leaf4',
-        translateY: [0, 18, 0],
-        translateX: [0, -12, 0],
-        duration: 12000,
-        direction: 'alternate',
-        easing: 'easeInOutSine',
-        loop: true
-      });
-      anime({
+      
+      animationManager.createAnimation('bg-rays', {
         targets: '#bg-rays',
         rotate: [0, 12, -8, 0],
         duration: 22000,
         easing: 'easeInOutSine',
         loop: true
       });
-      // Animate all emoji trees
-      // Remove or comment out any code related to animateOlives, animateAllEmojiTrees, or emoji olive/tree animation
+      
+      // Cloud animations (optimized for performance)
+      animationManager.createAnimation('cloud-1', {
+        targets: '#cloud-1',
+        translateX: [0, 100, 0],
+        opacity: [0.18, 1, 0.18],
+        duration: 24000,
+        direction: 'alternate',
+        easing: 'easeInOutSine',
+        loop: true,
+        delay: 0
+      });
+      
+      animationManager.createAnimation('cloud-2', {
+        targets: '#cloud-2',
+        translateX: [0, -80, 0],
+        opacity: [0.18, 1, 0.18],
+        duration: 24000,
+        direction: 'alternate',
+        easing: 'easeInOutSine',
+        loop: true,
+        delay: 0
+      });
+      
+      animationManager.createAnimation('cloud-3', {
+        targets: '#cloud-3',
+        translateX: [0, 60, 0],
+        opacity: [0.18, 1, 0.18],
+        duration: 24000,
+        direction: 'alternate',
+        easing: 'easeInOutSine',
+        loop: true,
+        delay: 0
+      });
+      
+      // Batch create grass animations
+      for (let i = 1; i <= 8; i++) {
+        animationManager.createAnimation(`grass-${i}`, {
+          targets: `#grass-${i}`,
+          translateY: [0, -30, 0],
+          opacity: [0.18, 1, 0.18],
+          duration: 24000,
+          direction: 'alternate',
+          easing: 'easeInOutSine',
+          loop: true,
+          delay: 0
+        });
+      }
+      
+      // Batch create flower animations
+      for (let i = 1; i <= 6; i++) {
+        animationManager.createAnimation(`island-flower-${i}`, {
+          targets: `#island-flower-${i}`,
+          scale: [1, 1.08, 1],
+          rotate: [0, 4, -4, 0],
+          translateY: [0, -2, 0],
+          opacity: [0.18, 1, 0.18],
+          duration: 24000,
+          direction: 'alternate',
+          easing: 'easeInOutSine',
+          loop: true,
+          delay: 0
+        });
+      }
+      
+      // Batch create bug animations
+      const islandBugNorthEls = document.querySelectorAll('#island-bugs-north ellipse');
+      islandBugNorthEls.forEach((el, i) => {
+        animationManager.createAnimation(`bug-${i}`, {
+          targets: el,
+          rotate: [0, 8, -8, 0],
+          translateX: [0, 2, 0],
+          translateY: [0, -2, 0],
+          duration: 24000,
+          direction: 'alternate',
+          easing: 'easeInOutSine',
+          loop: true,
+          delay: 0
+        });
+      });
+      
+      // Batch create bush animations
+      for (let i = 1; i <= 3; i++) {
+        animationManager.createAnimation(`bush-${i}`, {
+          targets: `#bush-${i}`,
+          scale: [1, 1.0125, 1],
+          opacity: [0.13, 1, 0.13],
+          duration: 24000,
+          direction: 'alternate',
+          easing: 'easeInOutSine',
+          loop: true,
+          delay: 0
+        });
+      }
+      
+      // Batch create ecosystem house animations
+      for (let i = 1; i <= 3; i++) {
+        animationManager.createAnimation(`ecosystem-house-${i}`, {
+          targets: `#house-${i} rect, #house-${i} polygon`,
+          scale: [1, 1.04, 1],
+          rotate: [0, 3, -3, 0],
+          translateY: [0, -2, 0],
+          opacity: [0.18, 1, 0.18],
+          duration: 24000,
+          direction: 'alternate',
+          easing: 'easeInOutSine',
+          loop: true,
+          delay: 0
+        });
+      }
+      
+      // Wind animations
+      for (let i = 1; i <= 2; i++) {
+        animationManager.createAnimation(`wind-${i}`, {
+          targets: `#wind-${i}`,
+          strokeDashoffset: [anime.setDashoffset, 0],
+          duration: 24000,
+          direction: 'alternate',
+          easing: 'easeInOutSine',
+          loop: true,
+          delay: 0
+        });
+      }
+      
+      // Bird animations - fly in and out of frame naturally with wing flapping
+      animationManager.createAnimation('bird-1', {
+        targets: '#bird-1',
+        translateX: [-100, 900],
+        translateY: [0, -20, 10, -15, 0],
+        opacity: [0, 0.8, 0.8, 0.8, 0],
+        scale: [0.8, 1, 1, 1, 0.8],
+        scaleY: [0.6, 1.2, 0.6, 1.2, 0.6], // Wing flapping effect
+        duration: 18000,
+        easing: 'easeInOutSine',
+        loop: true,
+        delay: 0
+      });
+      
+      animationManager.createAnimation('bird-2', {
+        targets: '#bird-2',
+        translateX: [-100, 900],
+        translateY: [0, -15, 15, -10, 0],
+        opacity: [0, 0.8, 0.8, 0.8, 0],
+        scale: [0.8, 1, 1, 1, 0.8],
+        scaleY: [0.5, 1.3, 0.5, 1.3, 0.5], // Wing flapping effect
+        duration: 20000,
+        easing: 'easeInOutSine',
+        loop: true,
+        delay: 0
+      });
+      
+      animationManager.createAnimation('bird-3', {
+        targets: '#bird-3',
+        translateX: [-100, 900],
+        translateY: [0, -25, 5, -20, 0],
+        opacity: [0, 0.8, 0.8, 0.8, 0],
+        scale: [0.8, 1, 1, 1, 0.8],
+        scaleY: [0.7, 1.1, 0.7, 1.1, 0.7], // Wing flapping effect
+        duration: 16000,
+        easing: 'easeInOutSine',
+        loop: true,
+        delay: 0
+      });
+      
+      // Island sun animation
+      animationManager.createAnimation('island-sun', {
+        targets: '#island-sun',
+        scale: [1, 1.02, 1],
+        duration: 24000,
+        direction: 'alternate',
+        easing: 'easeInOutSine',
+        loop: true,
+        delay: 0
+      });
+      
+      // Batch create tree animations
+      for (let i = 1; i <= 5; i++) {
+        animationManager.createAnimation(`tree-ellipse-${i}`, {
+          targets: `#island-trees g:nth-child(${i}) ellipse`,
+          scale: [1, 1.045, 1],
+          rotate: [0, 4, -4, 0],
+          translateY: [0, -2, 0],
+          duration: 24000,
+          direction: 'alternate',
+          easing: 'easeInOutSine',
+          loop: true,
+          delay: 0
+        });
+        
+        animationManager.createAnimation(`tree-rect-${i}`, {
+          targets: `#island-trees g:nth-child(${i}) rect`,
+          scaleY: [1, 1.03, 1],
+          rotate: [0, 2, -2, 0],
+          translateY: [0, -1, 0],
+          duration: 24000,
+          direction: 'alternate',
+          easing: 'easeInOutSine',
+          loop: true,
+          delay: 0
+        });
+      }
+      
+      // Batch create house animations
+      for (let i = 1; i <= 3; i++) {
+        animationManager.createAnimation(`island-house-${i}`, {
+          targets: `#island-houses g:nth-child(${i}) rect, #island-houses g:nth-child(${i}) polygon`,
+          scale: [1, 1.03, 1],
+          duration: 24000,
+          direction: 'alternate',
+          easing: 'easeInOutSine',
+          loop: true,
+          delay: 0
+        });
+      }
+      
+      // Batch create plant animations
+      for (let i = 1; i <= 4; i++) {
+        animationManager.createAnimation(`plant-${i}`, {
+          targets: `#island-plants ellipse:nth-child(${i})`,
+          scale: [1, 1.02, 1],
+          duration: 24000,
+          direction: 'alternate',
+          easing: 'easeInOutSine',
+          loop: true,
+          delay: 0
+        });
+      }
+      
+      // Background group animation
+      animationManager.createAnimation('animated-bg', {
+        targets: '#animated-bg',
+        rotate: [0, 3, -3, 0],
+        translateY: [0, -6, 0, 6, 0],
+        duration: 24000,
+        easing: 'easeInOutSine',
+        direction: 'alternate',
+        loop: true,
+        delay: 0
+      });
+      
       // Animate olive after page load
       const olive = document.getElementById('olive-logo');
-      console.log('Selecting #olive-logo', olive);
       if (olive) {
-        console.log('Starting olive entrance animation on page load...');
         olive.style.opacity = '0';
         olive.style.transformOrigin = '60px 60px';
         olive.style.transform = 'scale(0.7) translateY(30px)';
-        // Animate olive FIRST, then hero content after
-        anime({
+        
+        animationManager.createAnimation('olive-entrance', {
           targets: olive,
           opacity: [0, 1],
           scale: [0.7, 1.08, 1],
@@ -270,14 +577,11 @@
           easing: 'easeOutElastic(1, .7)',
           duration: 1200,
           begin: function() {
-            // Setup scroll animation immediately when olive animation starts
-            console.log('Olive animation starting, setting up scroll animation...');
             setupOliveScrollAnimation();
           },
           complete: function() {
-            console.log('Olive entrance animation complete');
-            // Now animate hero content after olive is ready
-            anime({
+            // Animate hero content after olive is ready
+            animationManager.createAnimation('hero-content', {
               targets: ['.hero-title', '.hero-subtitle', '.cta-btn'],
               opacity: [0, 1],
               translateY: [40, 0],
@@ -288,34 +592,56 @@
           }
         });
       }
+      
       // Parallax effect for mountain and sunrise
       const parallaxHero = document.querySelector('.parallax-hero');
       const mountain = document.getElementById('mountain-svg');
       const sunrise = document.getElementById('sunrise');
-      console.log('Selecting .parallax-hero', parallaxHero);
-      console.log('Selecting #mountain-svg', mountain);
-      console.log('Selecting #sunrise', sunrise);
+      
       if (parallaxHero && mountain && sunrise) {
+        let parallaxAnimation = null;
+        
         parallaxHero.addEventListener('mousemove', (e) => {
+          if (parallaxAnimation) {
+            parallaxAnimation.pause();
+          }
+          
           const rect = parallaxHero.getBoundingClientRect();
           const x = (e.clientX - rect.left) / rect.width - 0.5;
           const y = (e.clientY - rect.top) / rect.height - 0.5;
-          mountain.setAttribute('transform', `translate(${x * 20},${y * 10})`);
-          sunrise.setAttribute('transform', `translate(${x * 40},${y * 20})`);
+          
+          parallaxAnimation = anime({
+            targets: [mountain, sunrise],
+            translateX: [x * 20, x * 40],
+            translateY: [y * 10, y * 20],
+            duration: 100,
+            easing: 'easeOutQuad'
+          });
         });
+        
         parallaxHero.addEventListener('mouseleave', () => {
-          mountain.setAttribute('transform', '');
-          sunrise.setAttribute('transform', '');
+          if (parallaxAnimation) {
+            parallaxAnimation.pause();
+          }
+          
+          anime({
+            targets: [mountain, sunrise],
+            translateX: 0,
+            translateY: 0,
+            duration: 300,
+            easing: 'easeOutQuad'
+          });
         });
       }
+      
       // Sun hover pop and rise effect
       const sun = document.getElementById('sun-ellipse');
-      console.log('Selecting #sun-ellipse', sun);
       let sunHoverAnim = null;
+      
       if (sun) {
         sun.addEventListener('mouseenter', () => {
           if (sunHoverAnim) sunHoverAnim.pause();
-          sunHoverAnim = anime({
+          sunHoverAnim = animationManager.createAnimation('sun-hover', {
             targets: sun,
             scale: 1.15,
             cy: 60,
@@ -323,9 +649,10 @@
             easing: 'easeOutBack',
           });
         });
+        
         sun.addEventListener('mouseleave', () => {
           if (sunHoverAnim) sunHoverAnim.pause();
-          sunHoverAnim = anime({
+          sunHoverAnim = animationManager.createAnimation('sun-leave', {
             targets: sun,
             scale: 1,
             cy: 90,
@@ -334,205 +661,64 @@
           });
         });
       }
-      // Grass swaying (cloud speed/pattern)
-      for (let i = 1; i <= 8; i++) {
-        const el = document.querySelector(`#grass-${i}`);
-        console.log('Selecting #grass-' + i, el);
-        anime({
-          targets: `#grass-${i}`,
-          translateY: [0, -30, 0],
-          opacity: [0.18, 1, 0.18],
-          duration: 18000, // match cloud-1
-          direction: 'alternate',
-          easing: 'easeInOutSine',
-          loop: true,
-          delay: i*80,
-          update: function(anim) {
-            if (i === 1 && Math.random() < 0.01) console.log('Grass animating', anim.progress);
+      
+      // Performance monitoring
+      let frameCount = 0;
+      let lastTime = performance.now();
+      
+      function monitorPerformance() {
+        frameCount++;
+        const currentTime = performance.now();
+        
+        if (currentTime - lastTime >= 1000) {
+          const fps = Math.round((frameCount * 1000) / (currentTime - lastTime));
+          
+          if (fps < 30) {
+            console.warn(`Low FPS detected: ${fps}. Pausing some animations.`);
+            // Pause some background animations to improve performance
+            animationManager.pauseAllAnimations();
+            setTimeout(() => animationManager.resumeAllAnimations(), 1000);
           }
-        });
+          
+          frameCount = 0;
+          lastTime = currentTime;
+        }
+        
+        requestAnimationFrame(monitorPerformance);
       }
-      // Flowers blooming and swaying (gentle, cloud speed/pattern, animate whole group, rotate in place)
-      for (let i = 1; i <= 6; i++) {
-        const el = document.querySelector(`#island-flower-${i}`);
-        anime({
-          targets: el,
-          scale: [1, 1.08, 1],
-          rotate: [0, 4, -4, 0],
-          translateY: [0, -2, 0],
-          opacity: [0.18, 1, 0.18],
-          duration: 18000,
-          direction: 'alternate',
-          easing: 'easeInOutSine',
-          loop: true,
-          delay: i*120
-        });
-      }
-      // Bugs/Butterflies looping (gentle, cloud speed/pattern, rotate in place)
-      const islandBugNorthEls = document.querySelectorAll('#island-bugs-north ellipse');
-      islandBugNorthEls.forEach((el, i) => {
-        anime({
-          targets: el,
-          rotate: [0, 8, -8, 0],
-          translateX: [0, 2, 0],
-          translateY: [0, -2, 0],
-          duration: 18000,
-          direction: 'alternate',
-          easing: 'easeInOutSine',
-          loop: true,
-          delay: i*200
-        });
-      });
-      // Bushes pulsing (cloud speed/pattern)
-      for (let i = 1; i <= 3; i++) {
-        const el = document.querySelector(`#bush-${i}`);
-        console.log('Selecting #bush-' + i, el);
-        anime({
-          targets: `#bush-${i}`,
-          scale: [1, 1.0125, 1],
-          opacity: [0.13, 1, 0.13],
-          duration: 18000, // match cloud-1
-          direction: 'alternate',
-          easing: 'easeInOutSine',
-          loop: true,
-          delay: i*120
-        });
-      }
-      // Ecosystem houses pulsing and swaying (gentle, cloud speed/pattern, rotate in place)
-      for (let i = 1; i <= 3; i++) {
-        const el = document.querySelector(`#house-${i} rect`);
-        console.log('Selecting #house-' + i + ' rect (ecosystem)', el);
-        anime({
-          targets: `#house-${i} rect, #house-${i} polygon`,
-          scale: [1, 1.04, 1],
-          rotate: [0, 3, -3, 0],
-          translateY: [0, -2, 0],
-          opacity: [0.18, 1, 0.18],
-          duration: 18000,
-          direction: 'alternate',
-          easing: 'easeInOutSine',
-          loop: true,
-          delay: i*120
-        });
-      }
-      // Wind flowing (cloud speed/pattern)
-      for (let i = 1; i <= 2; i++) {
-        const el = document.querySelector(`#wind-${i}`);
-        console.log('Selecting #wind-' + i, el);
-        anime({
-          targets: `#wind-${i}`,
-          strokeDashoffset: [anime.setDashoffset, 0],
-          duration: 18000, // match cloud-1
-          direction: 'alternate',
-          easing: 'easeInOutSine',
-          loop: true
-        });
-      }
-      // Birds flying (cloud speed/pattern)
-      ['#bird-1', '#bird-2', '#bird-3'].forEach(id => {
-        console.log('Selecting', id, document.querySelector(id));
-      });
-      anime({
-        targets: ['#bird-1', '#bird-2', '#bird-3'],
-        translateX: [0, 900, 0],
-        opacity: [0.18, 0.18, 0],
-        duration: 18000, // match cloud-1
-        easing: 'easeInOutSine',
-        loop: true,
-        delay: anime.stagger(1200)
-      });
-      // Animate mini-world elements
-      // Sun pulsing (cloud speed/pattern)
-      const islandSun = document.querySelector('#island-sun');
-      console.log('Selecting #island-sun', islandSun);
-      anime({
-        targets: '#island-sun',
-        scale: [1, 1.02, 1],
-        duration: 18000, // match cloud-1
-        direction: 'alternate',
-        easing: 'easeInOutSine',
-        loop: true
-      });
-      // Trees swaying (gentle, cloud speed/pattern, rotate in place)
-      for (let i = 1; i <= 5; i++) {
-        const el = document.querySelector(`#island-trees g:nth-child(${i}) ellipse`);
-        console.log('Selecting #island-trees g:nth-child(' + i + ') ellipse', el);
-        anime({
-          targets: `#island-trees g:nth-child(${i}) ellipse`,
-          scale: [1, 1.045, 1],
-          rotate: [0, 4, -4, 0],
-          translateY: [0, -2, 0], // very subtle
-          duration: 18000, // match cloud-1
-          direction: 'alternate',
-          easing: 'easeInOutSine',
-          loop: true,
-          delay: i*200
-        });
-        const rectEl = document.querySelector(`#island-trees g:nth-child(${i}) rect`);
-        console.log('Selecting #island-trees g:nth-child(' + i + ') rect', rectEl);
-        anime({
-          targets: `#island-trees g:nth-child(${i}) rect`,
-          scaleY: [1, 1.03, 1],
-          rotate: [0, 2, -2, 0],
-          translateY: [0, -1, 0], // very subtle
-          duration: 18000, // match cloud-1
-          direction: 'alternate',
-          easing: 'easeInOutSine',
-          loop: true,
-          delay: i*300
-        });
-      }
-      // Houses pulsing (cloud speed/pattern)
-      for (let i = 1; i <= 3; i++) {
-        const el = document.querySelector(`#island-houses g:nth-child(${i}) rect`);
-        console.log('Selecting #island-houses g:nth-child(' + i + ') rect', el);
-        anime({
-          targets: `#island-houses g:nth-child(${i}) rect, #island-houses g:nth-child(${i}) polygon`,
-          scale: [1, 1.03, 1],
-          duration: 18000, // match cloud-1
-          direction: 'alternate',
-          easing: 'easeInOutSine',
-          loop: true,
-          delay: i*400
-        });
-      }
-      // Plants pulsing (cloud speed/pattern)
-      for (let i = 1; i <= 4; i++) {
-        const el = document.querySelector(`#island-plants ellipse:nth-child(${i})`);
-        console.log('Selecting #island-plants ellipse:nth-child(' + i + ')', el);
-        anime({
-          targets: `#island-plants ellipse:nth-child(${i})`,
-          scale: [1, 1.02, 1],
-          duration: 18000, // match cloud-1
-          direction: 'alternate',
-          easing: 'easeInOutSine',
-          loop: true,
-          delay: i*200
-        });
-      }
-      // Animate the entire SVG background parent group (sway/rotate in wind, cloud speed/pattern)
-      const animatedBg = document.querySelector('#animated-bg');
-      console.log('Selecting #animated-bg', animatedBg);
-      anime({
-        targets: '#animated-bg',
-        rotate: [0, 3, -3, 0],
-        translateY: [0, -6, 0, 6, 0],
-        duration: 18000, // match cloud-1
-        easing: 'easeInOutSine',
-        direction: 'alternate',
-        loop: true
-      });
+      
+      // Start performance monitoring
+      requestAnimationFrame(monitorPerformance);
     });
   </script>
   <script>
     // Setup olive scroll animation function
+    let oliveScrollHandlerAttached = false;
+    let oliveAnimationState = {
+      isSticky: false,
+      animationComplete: false,
+      lastScrollY: 0,
+      initialX: 0,
+      initialY: 0,
+      scrollEnd: 0
+    };
+    
     function setupOliveScrollAnimation() {
+      if (oliveScrollHandlerAttached) {
+        console.log('[OliveScroll] Scroll handler already attached, skipping.');
+        return;
+      }
+      oliveScrollHandlerAttached = true;
+      console.log('[OliveScroll] Attaching scroll handler.');
+      
       const olive = document.getElementById('olive-logo');
       if (!olive) {
         console.error('Olive logo SVG not found for scroll animation!');
         return;
       }
       
+      // Add will-change for smoother transform animation
+      olive.style.willChange = 'transform';
       console.log('Setting up olive scroll animation...');
       
       // Wait for next frame to ensure proper positioning
@@ -540,8 +726,8 @@
         // Get initial position of olive relative to viewport
         const oliveContainer = document.getElementById('olive-logo-container');
         const oliveRect = oliveContainer.getBoundingClientRect();
-        const initialX = oliveRect.left;
-        const initialY = oliveRect.top;
+        oliveAnimationState.initialX = oliveRect.left;
+        oliveAnimationState.initialY = oliveRect.top;
         
         // Helper: create/remove placeholder
         function setPlaceholder(visible) {
@@ -561,63 +747,29 @@
         }
         
         // Scroll-based animation (sticky to viewport)
-        let scrollEnd = document.body.scrollHeight - window.innerHeight; // Use full page height
-        let isSticky = false;
-        let animationComplete = false;
+        oliveAnimationState.scrollEnd = document.body.scrollHeight - window.innerHeight;
+        
+        // --- Optimization: throttle scroll handler ---
+        let ticking = false;
+        let resizeTicking = false;
         
         function animateOliveOnScroll() {
           const scrollY = window.scrollY;
-          const progress = Math.min(Math.max(scrollY / scrollEnd, 0), 1);
           
-          // Start sticky positioning when scroll begins
-          if (scrollY > 50 && !isSticky && !animationComplete) {
-            isSticky = true;
-            setPlaceholder(true);
-            document.body.appendChild(olive); // Move olive to body for fixed positioning
-            olive.style.position = 'fixed';
-            olive.style.top = `${initialY}px`;
-            olive.style.left = `${initialX}px`;
-            olive.style.zIndex = '1000';
-            olive.style.pointerEvents = 'none';
-            olive.style.width = '120px';
-            olive.style.height = '120px';
-            console.log('Olive is now sticky');
+          // Skip if scroll position hasn't changed significantly
+          if (Math.abs(scrollY - oliveAnimationState.lastScrollY) < 1) {
+            return;
           }
           
-          if (isSticky && !animationComplete) {
-            // Animate scale, translateY, and rotation while staying in viewport
-            const scale = 1 - 0.2 * progress;
-            const translateY = 0 + 120 * progress;
-            const rotate = 360 * progress;
-            
-            olive.style.transform = `scale(${scale}) translateY(${translateY}px) rotate(${rotate}deg)`;
-            olive.style.opacity = '1';
-            
-            // Only complete animation when reaching the very bottom
-            if (scrollY >= scrollEnd - 10) { // Within 10px of bottom
-              animationComplete = true;
-              setPlaceholder(true); // Keep placeholder so layout doesn't shift
-              // Keep olive fixed at final position
-              olive.style.position = 'fixed';
-              olive.style.top = `${initialY + 120}px`;
-              olive.style.left = `${initialX}px`;
-              olive.style.zIndex = '1000';
-              olive.style.pointerEvents = 'none';
-              olive.style.width = '120px';
-              olive.style.height = '120px';
-              olive.style.transform = 'scale(0.8) translateY(0px) rotate(360deg)';
-              olive.style.opacity = '1';
-              console.log('Olive animation complete and fixed at bottom of page');
-              isSticky = true;
-            }
-          }
-          // If user scrolls back up after animation complete, reset
-          if (animationComplete && scrollY < scrollEnd - 10) {
-            animationComplete = false;
-            olive.style.transform = '';
-          }
-          // If user scrolls back to top, remove sticky and placeholder
-          if (isSticky && scrollY <= 50) {
+          oliveAnimationState.lastScrollY = scrollY;
+          const progress = Math.min(Math.max(scrollY / oliveAnimationState.scrollEnd, 0), 1);
+          
+          // Reset state if we're at the very top (fresh start)
+          if (scrollY <= 10) {
+            if (oliveAnimationState.isSticky || oliveAnimationState.animationComplete) {
+              oliveAnimationState.isSticky = false;
+              oliveAnimationState.animationComplete = false;
+              oliveAnimationState.lastScrollY = 0;
             setPlaceholder(false);
             oliveContainer.appendChild(olive);
             olive.style.position = 'relative';
@@ -629,25 +781,79 @@
             olive.style.height = '';
             olive.style.transform = '';
             olive.style.opacity = '1';
-            isSticky = false;
+              console.log('Olive fully reset at top');
+              return;
+            }
+          }
+          
+          // Start sticky behavior when olive reaches top of viewport
+          if (scrollY > 100 && !oliveAnimationState.isSticky) {
+            oliveAnimationState.isSticky = true;
+            setPlaceholder(true);
+            olive.style.position = 'fixed';
+            olive.style.top = '20px';
+            olive.style.left = '50%';
+            olive.style.transform = 'translateX(-50%)';
+            olive.style.zIndex = '1000';
+            olive.style.pointerEvents = 'none';
+            olive.style.width = '120px';
+            olive.style.height = '120px';
+            console.log('Olive became sticky');
+          }
+          
+          // Animate olive based on scroll progress
+          if (oliveAnimationState.isSticky) {
+            const scale = 1 - (progress * 0.3); // Scale down to 70%
+            const opacity = 1 - (progress * 0.5); // Fade to 50%
+            const translateY = progress * 50; // Move down
+            const rotate = progress * 360; // Full 360° rotation
+            
+            olive.style.transform = `translateX(-50%) scale(${scale}) translateY(${translateY}px) rotate(${rotate}deg)`;
+            olive.style.opacity = opacity;
+            
+            // Complete animation at bottom
+            if (progress >= 0.99 && !oliveAnimationState.animationComplete) {
+              oliveAnimationState.animationComplete = true;
+              olive.style.opacity = '0';
+              olive.style.transform = 'translateX(-50%) scale(0.7) translateY(50px) rotate(360deg)';
+              console.log('Olive animation completed');
+            }
           }
         }
         
-        window.addEventListener('scroll', animateOliveOnScroll);
-        window.addEventListener('resize', function() {
-          scrollEnd = document.body.scrollHeight - window.innerHeight; // Recalculate on resize
-          // Recalculate initial position on resize only if not sticky yet
-          if (!isSticky) {
-            const oliveRect = oliveContainer.getBoundingClientRect();
-            const initialX = oliveRect.left;
-            const initialY = oliveRect.top;
+        // Throttled scroll handler
+        function throttledScrollHandler() {
+          if (!ticking) {
+            requestAnimationFrame(() => {
+              animateOliveOnScroll();
+              ticking = false;
+            });
+            ticking = true;
           }
-          animateOliveOnScroll();
-        });
+        }
         
-        // Initial call
-        animateOliveOnScroll();
-        console.log('Olive scroll animation setup complete');
+        // Throttled resize handler
+        function throttledResizeHandler() {
+          if (!resizeTicking) {
+            requestAnimationFrame(() => {
+              oliveAnimationState.scrollEnd = document.body.scrollHeight - window.innerHeight;
+              resizeTicking = false;
+            });
+            resizeTicking = true;
+          }
+        }
+        
+        // Attach event listeners
+        window.addEventListener('scroll', throttledScrollHandler, { passive: true });
+        window.addEventListener('resize', throttledResizeHandler, { passive: true });
+        
+        // Cleanup function
+        window.cleanupOliveScroll = function() {
+          window.removeEventListener('scroll', throttledScrollHandler);
+          window.removeEventListener('resize', throttledResizeHandler);
+          oliveScrollHandlerAttached = false;
+          console.log('[OliveScroll] Cleanup completed');
+        };
       });
     }
   </script>
