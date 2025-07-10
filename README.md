@@ -1,6 +1,7 @@
 # Olive Landing Page
+by Joseph Kang
 
-A beautiful, animated landing page for the Olive Mediterranean Christian App.
+A beautiful, animated landing page for the Olive Mediterranean Christian App. Created by Joseph Kang
 
 ## Features
 
